@@ -18,6 +18,8 @@ process.argv.forEach(function (val, i) {
 let fileInputName = inputArgsArray[0].arg;
 let fileOutputName = inputArgsArray[1].arg;
 
+
+// transform xls to csv with XLSX library
 const workBook = XLSX.readFile(fileInputName);
 XLSX.writeFile(workBook, 'data.csv', { bookType: "csv" });
 
@@ -51,8 +53,6 @@ csvtojson({ checkType: true })
         twelfth = source[i]["PD"];
 
       // console.table({value: first_value, type: typeof first_value, has_value: first_value.length > 0,i: i});
-
-      if (typeof first === "string") {}
 
       // get only sample numbers
       // push sample numbers to separate an array
