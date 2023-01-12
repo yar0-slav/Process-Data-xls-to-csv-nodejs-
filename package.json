@@ -1,0 +1,11 @@
+{
+    "name": "csv-data-to-json",
+    "description": "Transforming data from CSV to JSON with nodeJS",
+    "authors": "yar0_slav",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+        "csvtojson": "^2.0.10",
+        "xlsx": "^0.18.5"
+    }
+}

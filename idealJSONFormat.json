@@ -1,0 +1,27 @@
+{
+  "data": [
+    {
+      "name": "PB1",
+      "averages": {
+        "ph": "6.16",
+        "P": "219",
+        "K": "292"
+      },
+      "meta": ["SLA_K", "V", "D", "V", "S", "D"],
+      "values": [
+        {
+          "sample_number": "95",
+          "pH": "5.89",
+          "S": null,
+          "OH": null
+        },
+        {
+            "sample_number": "96",
+            "pH": "6.15",
+            "S": null,
+            "OH": null
+        }
+      ]
+    }
+  ]
+}
