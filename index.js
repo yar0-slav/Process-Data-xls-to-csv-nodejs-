@@ -1,6 +1,6 @@
 const csvtojson = require("csvtojson");
 const fs = require("fs");
-XLSX = require('xlsx');
+XLSX = require("xlsx");
 
 // get arguments from user
 const inputArgsArray = new Array();
@@ -18,21 +18,31 @@ process.argv.forEach(function (val, i) {
 let fileInputName = inputArgsArray[0].arg;
 let fileOutputName = inputArgsArray[1].arg;
 
-
 // transform xls to csv with XLSX library
 const workBook = XLSX.readFile(fileInputName);
-XLSX.writeFile(workBook, 'data.csv', { bookType: "csv" });
-
+XLSX.writeFile(workBook, "data.csv", { bookType: "csv" });
 
 // using external lib csvtojson to process the data
 csvtojson({ checkType: true })
-  .fromFile('data.csv')
+  .fromFile("data.csv")
   .then((source) => {
 
-    // source.reduce((prev, curr, ix) => {
-    //   console.log('prev: ', prev,'curr: ', curr,'ix: ', ix)
-    //   return curr
-    // },0)
+    // go through the values and assing 'PBIndex'
+    // only to number values
+    let indexedRows = [];
+    let PBIndex = 0;
+    source.reduce((prev, curr, ix) => {
+      const firstColumnType = curr["č.vz."];
+      if (typeof firstColumnType === "number") {
+        const addIndexValue = { ...curr, PBIndex };
+        indexedRows.push(addIndexValue);
+        //console.log('real ix: ', ix, 'pbIX: ', PBIndex);
+      }
+      if (typeof firstColumnType === "string" && firstColumnType.length > 0) {
+        PBIndex++;
+      }
+      return curr;
+    }, 0);
 
     // define arrays
     let samplesArray = new Array();
@@ -142,13 +152,23 @@ csvtojson({ checkType: true })
       }
     }
 
-    // merge blocks with meta data
-    // merge based on index as they are the same
-    for (let [inx, value] of metadataArray.entries()) {
-      blockArray[inx] = { ...blockArray[inx], ...value };
+    // first merge blockArray and metadaArray 
+    // merge based on index, since they are the same
+    for (let [ix, value] of metadataArray.entries()) {
+      blockArray[ix] = [{ ...blockArray[ix], ...value }];
+    }
+  
+    // then add the numberRows to their respective index
+    // if PBindex from indexedRows matches the position(index)
+    // of blockArray[index], push it
+    for (let [_, value] of indexedRows.entries()) {
+      for (let [blockIndex, __] of blockArray.entries()) {
+        if (value.PBIndex === blockIndex) {
+          blockArray[blockIndex].push(value)
+        }
+      }
     }
 
-    let data = JSON.stringify([...samplesArray, ...blockArray]);
+    let data = JSON.stringify([...blockArray]);
     fs.writeFileSync(fileOutputName, data);
-
   });
